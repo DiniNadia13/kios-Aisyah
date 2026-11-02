@@ -43,4 +43,7 @@ app/macos/Flutter/ephemeral/
 
 # Scratch & Temporary
 scratch/
+*.apk
+KiosAisyha.apk
+
 
