@@ -8,7 +8,7 @@ import 'package:flutter/foundation.dart';
 /// - Produksi         : https://domain-anda.com/api
 const String apiBase = String.fromEnvironment(
   'API_BASE',
-  defaultValue: 'https://private-slope-society-nil.trycloudflare.com/api',
+  defaultValue: 'https://kiosaisyha.infinityfreeapp.com/api',
 );
 
 /// Nomor WhatsApp toko (format internasional tanpa +).
