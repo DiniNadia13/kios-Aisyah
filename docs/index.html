@@ -1,417 +1,46 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+  -->
+  <base href="/kios-Aisyah/">
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kios Aisyha - Pusat Sembako Segar & Terlengkap</title>
-  <meta name="description" content="Aplikasi belanja sembako online Kios Aisyha. Belanja beras, minyak goreng, gula, dan telur segar mudah langsung dari HP. Gratis ongkir belanja min. Rp150.000!">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary: #059669;
-      --primary-dark: #047857;
-      --primary-light: #ecfdf5;
-      --accent: #f59e0b;
-      --secondary: #ff6b35;
-      --text-main: #0f172a;
-      --text-muted: #64748b;
-      --bg: #f8fafc;
-      --card-bg: #ffffff;
-      --border: #e2e8f0;
-    }
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="A new Flutter project.">
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+  <!-- iOS meta tags & icons -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="kios_aisyha">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
-    body {
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: var(--bg);
-      color: var(--text-main);
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-    }
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
 
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-
-    /* Navbar */
-    header {
-      background: #ffffff;
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      backdrop-filter: blur(8px);
-      background: rgba(255, 255, 255, 0.95);
-    }
-    .nav-wrapper {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 70px;
-    }
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-      color: var(--text-main);
-    }
-    .logo-img {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 22px;
-      font-weight: 800;
-      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
-    }
-    .logo-text h1 {
-      font-size: 19px;
-      font-weight: 800;
-      line-height: 1.2;
-      color: var(--primary-dark);
-    }
-    .logo-text span {
-      font-size: 12px;
-      color: var(--text-muted);
-      font-weight: 500;
-    }
-    .btn-wa-nav {
-      background: #25d366;
-      color: white;
-      padding: 8px 16px;
-      border-radius: 99px;
-      font-size: 13px;
-      font-weight: 700;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .btn-wa-nav:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
-    }
-
-    /* Hero Section */
-    .hero {
-      padding: 50px 0 35px;
-      text-align: center;
-    }
-    .badge-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--primary-light);
-      color: var(--primary-dark);
-      padding: 6px 16px;
-      border-radius: 99px;
-      font-size: 12.5px;
-      font-weight: 700;
-      margin-bottom: 20px;
-      border: 1px solid #a7f3d0;
-    }
-    .hero h2 {
-      font-size: 34px;
-      font-weight: 800;
-      line-height: 1.25;
-      margin-bottom: 16px;
-      color: #0f172a;
-    }
-    .hero h2 span {
-      color: var(--primary);
-    }
-    .hero p {
-      font-size: 16px;
-      color: var(--text-muted);
-      max-width: 600px;
-      margin: 0 auto 30px;
-    }
-
-    /* Download Box */
-    .download-card {
-      background: white;
-      border-radius: 24px;
-      padding: 32px 24px;
-      border: 1px solid var(--border);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
-      max-width: 640px;
-      margin: 0 auto 50px;
-    }
-    .cta-buttons {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-    @media (min-width: 500px) {
-      .cta-buttons {
-        flex-direction: row;
-        justify-content: center;
-      }
-    }
-    .btn-download {
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      color: white;
-      padding: 16px 28px;
-      border-radius: 14px;
-      font-size: 15px;
-      font-weight: 700;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      box-shadow: 0 6px 20px rgba(5, 150, 105, 0.35);
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .btn-download:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(5, 150, 105, 0.45);
-    }
-    .btn-wa-hero {
-      background: #f8fafc;
-      color: #1e293b;
-      border: 1px solid var(--border);
-      padding: 16px 24px;
-      border-radius: 14px;
-      font-size: 15px;
-      font-weight: 700;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: background 0.2s;
-    }
-    .btn-wa-hero:hover {
-      background: #f1f5f9;
-    }
-    .file-info {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    /* Highlights Banner */
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 16px;
-      margin-bottom: 50px;
-    }
-    .feat-card {
-      background: white;
-      border-radius: 18px;
-      padding: 22px;
-      border: 1px solid var(--border);
-      text-align: left;
-    }
-    .feat-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      background: var(--primary-light);
-      color: var(--primary-dark);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      margin-bottom: 14px;
-    }
-    .feat-card h3 {
-      font-size: 16px;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-    .feat-card p {
-      font-size: 13px;
-      color: var(--text-muted);
-      line-height: 1.5;
-    }
-
-    /* Cara Install */
-    .install-box {
-      background: #ffffff;
-      border-radius: 20px;
-      padding: 28px;
-      border: 1px solid var(--border);
-      margin-bottom: 50px;
-      text-align: left;
-    }
-    .install-box h3 {
-      font-size: 18px;
-      font-weight: 800;
-      margin-bottom: 18px;
-      text-align: center;
-    }
-    .steps {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 18px;
-    }
-    .step-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-    }
-    .step-num {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: var(--primary);
-      color: white;
-      font-weight: 800;
-      font-size: 13px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-    .step-text h4 {
-      font-size: 14px;
-      font-weight: 700;
-      margin-bottom: 3px;
-    }
-    .step-text p {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    /* Footer */
-    footer {
-      background: white;
-      border-top: 1px solid var(--border);
-      padding: 30px 0;
-      text-align: center;
-      font-size: 13px;
-      color: var(--text-muted);
-    }
-    footer a {
-      color: var(--primary);
-      text-decoration: none;
-      font-weight: 600;
-    }
-  </style>
+  <title>kios_aisyha</title>
+  <link rel="manifest" href="manifest.json">
 </head>
 <body>
+  <!--
+    You can customize the "flutter_bootstrap.js" script.
+    This is useful to provide a custom configuration to the Flutter loader
+    or to give the user feedback during the initialization process.
 
-  <!-- Navbar -->
-  <header>
-    <div class="container nav-wrapper">
-      <a href="#" class="logo">
-        <img src="app_logo.png" alt="Logo Kios Aisyha" style="width: 44px; height: 44px; border-radius: 12px; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25); object-fit: cover;">
-        <div class="logo-text">
-          <h1>Kios Aisyha</h1>
-          <span>Pusat Sembako Segar & Terlengkap</span>
-        </div>
-      </a>
-      <a href="https://wa.me/6282154306904?text=Halo%20Kios%20Aisyha%2C%20saya%20mau%20pesan%20sembako" target="_blank" class="btn-wa-nav">
-        <span>💬 Chat Toko</span>
-      </a>
-    </div>
-  </header>
-
-  <!-- Hero -->
-  <section class="hero">
-    <div class="container">
-      <div class="badge-pill">
-        <span>🚚 GRATIS ONGKIR Belanja Min. Rp150.000</span>
-      </div>
-      <h2>Belanja Sembako Lebih Mudah,<br><span>Cepat & Hemat di Kios Aisyha</span></h2>
-      <p>Pesan beras, minyak goreng, gula pasir, tepung, dan telur segar langsung dari HP. Diantar cepat 30-45 menit sampai depan pintu rumah Anda!</p>
-
-      <!-- Download Box -->
-      <div class="download-card">
-        <div style="margin-bottom: 20px;">
-          <img src="app_logo.png" alt="App Icon Kios Aisyha" style="width: 88px; height: 88px; border-radius: 22px; box-shadow: 0 10px 25px rgba(5, 150, 105, 0.28); object-fit: cover;">
-          <h3 style="font-size: 20px; font-weight: 800; margin-top: 10px; color: #0f172a;">Aplikasi Resmi Kios Aisyha</h3>
-          <p style="font-size: 13.5px; color: #64748b; margin-top: 4px;">Katalog lengkap sembako, promo flash sale & pesan antar cepat</p>
-        </div>
-        <div class="cta-buttons">
-          <a href="https://github.com/DiniNadia13/kios-Aisyah/releases/download/v1.0.0/KiosAisyha.apk" class="btn-download" id="downloadBtn">
-            <span>⬇️</span> Download Aplikasi Android (.APK)
-          </a>
-          <a href="https://wa.me/6282154306904?text=Halo%20Kios%20Aisyha%2C%20saya%20mau%20tanya%20stok%20sembako" target="_blank" class="btn-wa-hero">
-            <span>💬</span> Pesan via WhatsApp
-          </a>
-        </div>
-        <div class="file-info">
-          Versi 1.0.0 • Ukuran: ~54 MB • Android 8.0 ke atas • Aman & Resmi Kios Aisyha
-        </div>
-      </div>
-
-      <!-- Feature Grid -->
-      <div class="features-grid">
-        <div class="feat-card">
-          <div class="feat-icon">🌾</div>
-          <h3>Sembako Terjamin Segar</h3>
-          <p>Kualitas beras pilihan, minyak goreng bermerk, dan telur segar yang selalu dicek setiap hari.</p>
-        </div>
-        <div class="feat-card">
-          <div class="feat-icon">🛵</div>
-          <h3>Antar Cepat 30 - 45 Menit</h3>
-          <p>Pesanan langsung disiapkan dan diantar oleh kurir toko ke alamat Anda tanpa perlu antre.</p>
-        </div>
-        <div class="feat-card">
-          <div class="feat-icon">💵</div>
-          <h3>Bisa Bayar di Tempat (COD)</h3>
-          <p>Mendukung COD (bayar saat barang sampai), Transfer Bank BCA, dan QRIS semua e-wallet.</p>
-        </div>
-      </div>
-
-      <!-- Panduan Install -->
-      <div class="install-box">
-        <h3>Cara Mudah Pasang Aplikasi di HP Android</h3>
-        <div class="steps">
-          <div class="step-item">
-            <div class="step-num">1</div>
-            <div class="step-text">
-              <h4>Download File APK</h4>
-              <p>Klik tombol hijau "Download Aplikasi" di atas melalui HP Anda.</p>
-            </div>
-          </div>
-          <div class="step-item">
-            <div class="step-num">2</div>
-            <div class="step-text">
-              <h4>Buka & Izinkan Pasang</h4>
-              <p>Buka file yang selesai didownload, lalu pilih "Install / Pasang".</p>
-            </div>
-          </div>
-          <div class="step-item">
-            <div class="step-num">3</div>
-            <div class="step-text">
-              <h4>Mulai Belanja</h4>
-              <p>Buka Kios Aisyha, pilih sembako, dan checkout langsung dengan mudah!</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer>
-    <div class="container">
-      <p><strong>Kios Aisyha</strong> — Pusat Sembako Segar & Terlengkap</p>
-      <p>Jam Buka: 07:00 - 21:00 WIB • WhatsApp: <a href="https://wa.me/6282154306904">+62 821-5430-6904</a></p>
-      <p style="margin-top: 8px; font-size: 11.5px; color: #94a3b8;">© 2026 Kios Aisyha. Dibuat dengan cinta untuk kebutuhan dapur berkah Anda.</p>
-    </div>
-  </footer>
-
+    For more details:
+    * https://docs.flutter.dev/platform-integration/web/initialization
+  -->
+  <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>

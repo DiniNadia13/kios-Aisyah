@@ -1,11 +1,11 @@
 {
-    "name": "kios_aisyha",
-    "short_name": "kios_aisyha",
+    "name": "Kios Aisyha - Sembako Segar & Terlengkap",
+    "short_name": "Kios Aisyha",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#047857",
+    "theme_color": "#059669",
+    "description": "Belanja beras, minyak goreng, gula dan kebutuhan pokok segar mudah & cepat di Kios Aisyha.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
