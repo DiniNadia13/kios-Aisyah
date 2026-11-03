@@ -78,6 +78,7 @@ class ShopController extends Controller
             'free_shipping_min' => CheckoutService::freeShippingMin(),
             'store_whatsapp' => Setting::get('store_whatsapp', '6282154306904'),
             'store_hours' => Setting::get('store_hours', '07:00 - 21:00 WIB'),
+            'is_store_closed_manually' => (bool) Setting::get('is_store_closed_manually', 0),
             'payment_info' => [
                 'bank_name' => Setting::get('store_bank_name', 'BCA / BRI / Mandiri'),
                 'bank_account' => Setting::get('store_bank_account', ''),
@@ -436,6 +437,7 @@ class ShopController extends Controller
             'store_whatsapp' => Setting::get('store_whatsapp', '6282154306904'),
             'store_phone' => Setting::get('store_phone', '0821-5430-6904'),
             'store_hours' => Setting::get('store_hours', '07:00 - 21:00 WIB'),
+            'is_store_closed_manually' => (bool) Setting::get('is_store_closed_manually', 0),
             'store_address' => Setting::get('store_address', 'Jl. Kios Aisyha, Pusat Sembako Segar'),
             'store_bank_name' => Setting::get('store_bank_name', 'BCA'),
             'store_bank_account' => Setting::get('store_bank_account', ''),
@@ -453,6 +455,7 @@ class ShopController extends Controller
 
         $keys = [
             'store_name', 'store_whatsapp', 'store_phone', 'store_hours',
+            'is_store_closed_manually',
             'store_address', 'store_bank_name', 'store_bank_account',
             'store_bank_holder', 'store_qris_name', 'free_shipping_min', 'default_shipping_fee',
         ];

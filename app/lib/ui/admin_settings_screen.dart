@@ -33,6 +33,7 @@ class _AdminSettingsScreenState extends State<AdminSettingsScreen> {
   final freeShippingMin = TextEditingController();
   final defaultShippingFee = TextEditingController();
 
+  bool isStoreClosedManually = false;
   String? currentQrisImage;
   File? newQrisFile;
 
@@ -59,6 +60,7 @@ class _AdminSettingsScreenState extends State<AdminSettingsScreen> {
 
       freeShippingMin.text = (r['free_shipping_min'] ?? 150000).toString();
       defaultShippingFee.text = (r['default_shipping_fee'] ?? 8000).toString();
+      isStoreClosedManually = r['is_store_closed_manually'] == true;
       currentQrisImage = r['store_qris_image'];
     } catch (e) {
       if (mounted) snack(context, 'Gagal memuat pengaturan: $e');
@@ -117,6 +119,7 @@ class _AdminSettingsScreenState extends State<AdminSettingsScreen> {
         'store_phone': storePhone.text.trim(),
         'store_whatsapp': storeWhatsapp.text.trim(),
         'store_hours': storeHours.text.trim(),
+        'is_store_closed_manually': isStoreClosedManually ? '1' : '0',
         'store_address': storeAddress.text.trim(),
         'store_bank_name': bankName.text.trim(),
         'store_bank_account': bankAccount.text.trim(),
@@ -241,7 +244,95 @@ class _AdminSettingsScreenState extends State<AdminSettingsScreen> {
             ),
             const SizedBox(height: 14),
 
-            // 3. Profil Toko & WhatsApp
+            // 3. Jam Operasional & Status Buka/Tutup Toko
+            _sectionCard(
+              title: 'Jam Operasional & Status Toko',
+              icon: Icons.access_time_rounded,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _field('Jam Buka & Tutup Toko', storeHours, 'Contoh: 07:00 - 21:00 WIB'),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Pilihan Cepat:',
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      color: kTextSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 6,
+                    children: [
+                      _hourPresetChip('07:00 - 21:00 WIB'),
+                      _hourPresetChip('06:00 - 21:00 WIB'),
+                      _hourPresetChip('08:00 - 22:00 WIB'),
+                      _hourPresetChip('24 Jam (Nonstop)'),
+                    ],
+                  ),
+                  const SizedBox(height: 14),
+                  const Divider(height: 1, color: Color(0xFFF1F5F9)),
+                  const SizedBox(height: 14),
+
+                  // Saklar Tutup Toko Sementara
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: isStoreClosedManually ? const Color(0xFFFEF2F2) : const Color(0xFFF8FAFC),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: isStoreClosedManually ? const Color(0xFFFCA5A5) : const Color(0xFFE2E8F0),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          isStoreClosedManually ? Icons.store_mall_directory_rounded : Icons.storefront_rounded,
+                          color: isStoreClosedManually ? Colors.red.shade700 : const Color(0xFF10B981),
+                          size: 24,
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Tutup Toko Sementara (Manual)',
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12.5,
+                                  color: isStoreClosedManually ? Colors.red.shade800 : kTextPrimary,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                isStoreClosedManually
+                                    ? 'Toko ditandai TUTUP sekarang (Banner tutup tampil di pelanggan)'
+                                    : 'Toko mengikuti jadwal jam operasional di atas secara otomatis',
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 11,
+                                  color: isStoreClosedManually ? Colors.red.shade600 : kTextSecondary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Switch(
+                          value: isStoreClosedManually,
+                          activeColor: Colors.red.shade700,
+                          onChanged: (val) => setState(() => isStoreClosedManually = val),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 14),
+
+            // 4. Profil Toko & Kontak
             _sectionCard(
               title: 'Profil Toko & Kontak',
               icon: Icons.storefront_rounded,
@@ -253,15 +344,13 @@ class _AdminSettingsScreenState extends State<AdminSettingsScreen> {
                   const SizedBox(height: 12),
                   _field('Nomor Telepon Toko', storePhone, '0821-5430-6904'),
                   const SizedBox(height: 12),
-                  _field('Jam Buka & Tutup Toko', storeHours, 'Contoh: 07:00 - 21:00 WIB'),
-                  const SizedBox(height: 12),
                   _field('Alamat Lengkap Kios', storeAddress, 'Jl. Pemuda Sembako No. 8, Kios Aisyha', maxLines: 2),
                 ],
               ),
             ),
             const SizedBox(height: 14),
 
-            // 4. Pengaturan Ongkir
+            // 5. Pengaturan Ongkir
             _sectionCard(
               title: 'Ketentuan Ongkir',
               icon: Icons.local_shipping_outlined,
@@ -296,6 +385,31 @@ class _AdminSettingsScreenState extends State<AdminSettingsScreen> {
             ),
             const SizedBox(height: 30),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _hourPresetChip(String val) {
+    final selected = storeHours.text.trim() == val;
+    return GestureDetector(
+      onTap: () => setState(() => storeHours.text = val),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: selected ? kPrimaryDark : const Color(0xFFF1F5F9),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: selected ? kPrimaryDark : const Color(0xFFE2E8F0),
+          ),
+        ),
+        child: Text(
+          val,
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 11,
+            fontWeight: selected ? FontWeight.bold : FontWeight.w600,
+            color: selected ? Colors.white : kTextPrimary,
+          ),
         ),
       ),
     );

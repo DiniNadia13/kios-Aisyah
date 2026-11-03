@@ -188,7 +188,8 @@ class _HomeScreenState extends State<HomeScreen> {
     final storeHours = (data?['payment_info']?['store_hours'] as String?) ??
         (data?['store_hours'] as String?) ??
         '07:00 - 21:00 WIB';
-    final isOpen = _isStoreOpen(storeHours);
+    final isManuallyClosed = data?['is_store_closed_manually'] == true;
+    final isOpen = !isManuallyClosed && _isStoreOpen(storeHours);
 
     // Filter produk berdasarkan kategori jika dipilih
     final displayedProducts = selectedCategoryId == null
