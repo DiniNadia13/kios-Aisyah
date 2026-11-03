@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../api.dart';
+import '../main.dart';
 import '../state.dart';
 import 'admin_orders_screen.dart';
 import 'common.dart';
@@ -69,6 +70,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
       '$count produk dari ${o['code']} telah ditambahkan ke keranjang!',
       isSuccess: true,
     );
+    Shell.switchTab(context, 2); // Langsung pindah ke tab keranjang!
   }
 
   @override
@@ -369,6 +371,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
       '$count produk dari ${o['code']} dimasukkan ke keranjang!',
       isSuccess: true,
     );
+    Navigator.pop(context);
+    Shell.switchTab(context, 2); // Langsung pindah ke tab keranjang!
   }
 
   @override

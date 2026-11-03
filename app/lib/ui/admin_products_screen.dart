@@ -17,9 +17,13 @@ class _AdminProductsScreenState extends State<AdminProductsScreen> {
   List<Json> products = [];
   List<Json> categories = [];
   int? selectedCategory;
+  bool filterLowStockOnly = false;
   final searchCtrl = TextEditingController();
   bool loading = true;
   String? error;
+
+  int get lowStockCount =>
+      products.where((p) => (p['stock'] as int) <= ((p['min_stock'] as int?) ?? 5)).length;
 
   @override
   void initState() {

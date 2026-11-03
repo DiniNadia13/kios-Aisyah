@@ -421,6 +421,58 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               ),
             ),
             const SizedBox(height: 14),
+          ] else ...[
+            _sectionCard(
+              title: 'Lokasi Pengambilan Sendiri',
+              icon: Icons.storefront_rounded,
+              child: Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF0FDF4),
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: const Color(0xFFA7F3D0)),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF10B981),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(Icons.check_rounded, color: Colors.white, size: 16),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Bebas Biaya Pengiriman (Gratis)',
+                            style: GoogleFonts.plusJakartaSans(
+                              fontWeight: FontWeight.w800,
+                              fontSize: 13,
+                              color: kPrimaryDark,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Pesanan Anda akan langsung disiapkan di Kios Aisyha. Tunjukkan nomor pesanan atau bukti nota WhatsApp kepada kasir saat mengambil belanjaan Anda.',
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 12,
+                              color: kTextSecondary,
+                              height: 1.35,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 14),
           ],
 
           // 3. Voucher Promo

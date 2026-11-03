@@ -15,10 +15,25 @@ class ProductDetailScreen extends StatefulWidget {
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
   int qty = 1;
+  bool _initializedFromCart = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_initializedFromCart) {
+      _initializedFromCart = true;
+      final inCart = context.read<CartState>().items[widget.product['id'] as int]?.qty ?? 0;
+      if (inCart > 0) {
+        qty = inCart;
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final p = widget.product;
+    final cart = context.watch<CartState>();
+    final inCartQty = cart.items[p['id'] as int]?.qty ?? 0;
     final hasPromo = p['has_promo'] == true;
     final stock = p['stock'] as int;
     final outOfStock = stock <= 0;
@@ -274,68 +289,187 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               ),
             ],
           ),
-          child: Row(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              // Pengatur Jumlah
-              Container(
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF1F5F9),
-                  borderRadius: BorderRadius.circular(12),
+              // Banner pemberitahuan jika produk sudah ada di keranjang + Opsi Hapus Cepat
+              if (inCartQty > 0)
+                Container(
+                  margin: const EdgeInsets.only(bottom: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFECFDF5),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: const Color(0xFFA7F3D0)),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(Icons.check_circle_rounded, size: 14, color: Color(0xFF059669)),
+                          const SizedBox(width: 6),
+                          Text(
+                            'Sudah ada $inCartQty ${p['unit']} di keranjang',
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              color: const Color(0xFF047857),
+                            ),
+                          ),
+                        ],
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          cart.setQty(p['id'] as int, 0);
+                          snack(context, '${p['name']} dihapus dari keranjang', isSuccess: true);
+                          setState(() => qty = 1);
+                        },
+                        child: Text(
+                          'Hapus Barang',
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.red.shade600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                child: Row(
-                  children: [
-                    IconButton(
-                      iconSize: 18,
-                      onPressed: qty > 1 ? () => setState(() => qty--) : null,
-                      icon: const Icon(Icons.remove_rounded),
-                    ),
-                    Text(
-                      '$qty',
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w800,
-                        color: kTextPrimary,
+              Row(
+                children: [
+                  // Pengatur Jumlah (Jika 1, tombol minus berubah jadi ikon tempat sampah merah untuk menghapus/batal)
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF1F5F9),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: (qty == 1 && inCartQty > 0)
+                            ? Colors.red.shade200
+                            : Colors.transparent,
                       ),
                     ),
-                    IconButton(
-                      iconSize: 18,
-                      onPressed: qty < stock ? () => setState(() => qty++) : null,
-                      icon: const Icon(Icons.add_rounded),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          iconSize: 18,
+                          tooltip: (qty == 1 && inCartQty > 0)
+                              ? 'Hapus dari keranjang'
+                              : (qty == 1 ? 'Batal memilih barang ini' : 'Kurangi'),
+                          onPressed: () {
+                            if (qty > 1) {
+                              setState(() => qty--);
+                              if (inCartQty > 0) {
+                                cart.setQty(p['id'] as int, qty);
+                              }
+                            } else {
+                              // Saat jumlah 1 dan ditekan ikon hapus (tempat sampah merah)
+                              if (inCartQty > 0) {
+                                cart.setQty(p['id'] as int, 0);
+                                snack(
+                                  context,
+                                  '${p['name']} dihapus dari keranjang',
+                                  isSuccess: true,
+                                );
+                                setState(() => qty = 1);
+                              } else {
+                                snack(context, 'Batal memilih ${p['name']}');
+                                Navigator.pop(context);
+                              }
+                            }
+                          },
+                          icon: Icon(
+                            qty == 1
+                                ? Icons.delete_outline_rounded
+                                : Icons.remove_rounded,
+                            color: qty == 1
+                                ? Colors.red.shade600
+                                : kTextPrimary,
+                            size: qty == 1 ? 20 : 18,
+                          ),
+                        ),
+                        Text(
+                          '$qty',
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w800,
+                            color: kTextPrimary,
+                          ),
+                        ),
+                        IconButton(
+                          iconSize: 18,
+                          tooltip: 'Tambah',
+                          onPressed: qty < stock
+                              ? () {
+                                  setState(() => qty++);
+                                  if (inCartQty > 0) {
+                                    cart.setQty(p['id'] as int, qty);
+                                  }
+                                }
+                              : null,
+                          icon: const Icon(Icons.add_rounded),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 12),
+                  ),
+                  const SizedBox(width: 12),
 
-              // Tombol Tambah ke Keranjang
-              Expanded(
-                child: FilledButton.icon(
-                  style: FilledButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    backgroundColor: outOfStock ? kSlate300 : kPrimary,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
+                  // Tombol Tambah / Simpan ke Keranjang
+                  Expanded(
+                    child: FilledButton.icon(
+                      style: FilledButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        backgroundColor: outOfStock
+                            ? kSlate300
+                            : (inCartQty > 0 ? const Color(0xFF047857) : kPrimary),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                      ),
+                      onPressed: outOfStock
+                          ? null
+                          : () {
+                              if (inCartQty > 0) {
+                                cart.setQty(p['id'] as int, qty);
+                                snack(
+                                  context,
+                                  'Jumlah ${p['name']} diperbarui ($qty ${p['unit']})',
+                                  isSuccess: true,
+                                );
+                              } else {
+                                final ok = cart.add(p, qty);
+                                if (ok) {
+                                  snack(
+                                    context,
+                                    '$qty x ${p['name']} masuk keranjang',
+                                    isSuccess: true,
+                                  );
+                                } else {
+                                  snack(context, 'Stok tidak mencukupi');
+                                }
+                              }
+                            },
+                      icon: Icon(
+                        inCartQty > 0
+                            ? Icons.check_circle_outline_rounded
+                            : Icons.add_shopping_cart_rounded,
+                        size: 20,
+                      ),
+                      label: Text(
+                        outOfStock
+                            ? 'Stok Habis'
+                            : (inCartQty > 0
+                                ? 'Tersimpan ($qty) • ${rp(finalPrice * qty)}'
+                                : 'Tambah • ${rp(finalPrice * qty)}'),
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 13.5,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ),
-                  onPressed: outOfStock
-                      ? null
-                      : () {
-                          final ok = context.read<CartState>().add(p, qty);
-                          if (ok) {
-                            snack(context, '$qty x ${p['name']} masuk keranjang', isSuccess: true);
-                          } else {
-                            snack(context, 'Stok tidak mencukupi');
-                          }
-                        },
-                  icon: const Icon(Icons.add_shopping_cart_rounded, size: 20),
-                  label: Text(
-                    outOfStock ? 'Stok Habis' : 'Tambah • ${rp(finalPrice * qty)}',
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 13.5,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
+                ],
               ),
             ],
           ),

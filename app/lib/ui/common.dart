@@ -370,6 +370,12 @@ class ProductCard extends StatelessWidget {
                                 snack(context, 'Stok maksimal tercapai');
                               }
                             },
+                            onLongPress: inCartQty > 0
+                                ? () {
+                                    cart.setQty(p['id'] as int, 0);
+                                    snack(context, '${p['name']} dihapus dari keranjang', isSuccess: true);
+                                  }
+                                : null,
                             child: AnimatedContainer(
                               duration: const Duration(milliseconds: 150),
                               width: 34,

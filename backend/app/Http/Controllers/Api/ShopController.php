@@ -77,6 +77,7 @@ class ShopController extends Controller
             'vouchers' => Voucher::live()->limit(5)->get(),
             'free_shipping_min' => CheckoutService::freeShippingMin(),
             'store_whatsapp' => Setting::get('store_whatsapp', '6282154306904'),
+            'store_hours' => Setting::get('store_hours', '07:00 - 21:00 WIB'),
             'payment_info' => [
                 'bank_name' => Setting::get('store_bank_name', 'BCA / BRI / Mandiri'),
                 'bank_account' => Setting::get('store_bank_account', ''),
