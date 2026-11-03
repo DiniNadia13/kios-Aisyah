@@ -169,55 +169,116 @@ class _HomeScreenState extends State<HomeScreen> {
           child: CustomScrollView(
             physics: const BouncingScrollPhysics(),
             slivers: [
-              // 1. Header Minimalis & Rapi
+              // 1. Header Mewah Bergradasi 3D & Bergelombang (Perpaduan Emerald & Warm Merchant)
               SliverToBoxAdapter(
                 child: Container(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-                  color: Colors.white,
+                  padding: const EdgeInsets.fromLTRB(18, 14, 18, 22),
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [Color(0xFF047857), Color(0xFF059669), Color(0xFF0D9488)],
+                    ),
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(28),
+                      bottomRight: Radius.circular(28),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color(0x28047857),
+                        blurRadius: 18,
+                        offset: Offset(0, 8),
+                      ),
+                    ],
+                  ),
                   child: Row(
                     children: [
+                      // Logo Toko Timbul dengan Aksen Emas Padi
                       Container(
-                        padding: const EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(9),
                         decoration: BoxDecoration(
-                          color: kPrimaryLight,
-                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(14),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 8,
+                              offset: Offset(0, 3),
+                            ),
+                          ],
                         ),
                         child: const Icon(
                           Icons.storefront_rounded,
-                          color: kPrimaryDark,
-                          size: 20,
+                          color: Color(0xFF059669),
+                          size: 22,
                         ),
                       ),
-                      const SizedBox(width: 10),
+                      const SizedBox(width: 12),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              'Kios Aisyha',
-                              style: GoogleFonts.plusJakartaSans(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w800,
-                                color: kTextPrimary,
-                              ),
+                            Row(
+                              children: [
+                                Text(
+                                  'Kios Aisyha',
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w900,
+                                    color: Colors.white,
+                                    letterSpacing: -0.2,
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFF59E0B),
+                                    borderRadius: BorderRadius.circular(6),
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        color: Colors.black12,
+                                        blurRadius: 4,
+                                        offset: Offset(0, 1),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Text(
+                                    'RESMI',
+                                    style: GoogleFonts.plusJakartaSans(
+                                      color: Colors.white,
+                                      fontSize: 9,
+                                      fontWeight: FontWeight.w900,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
+                            const SizedBox(height: 3),
                             Row(
                               children: [
                                 Container(
-                                  width: 6,
-                                  height: 6,
+                                  width: 7,
+                                  height: 7,
                                   decoration: const BoxDecoration(
-                                    color: Color(0xFF10B981),
+                                    color: Color(0xFF6EE7B7),
                                     shape: BoxShape.circle,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Color(0xFF6EE7B7),
+                                        blurRadius: 4,
+                                        spreadRadius: 1,
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                const SizedBox(width: 5),
+                                const SizedBox(width: 6),
                                 Text(
-                                  'Buka 07:00 - 21:00 • Sembako Murah',
+                                  'Buka 07:00 - 21:00 • Sembako Murah & Segar',
                                   style: GoogleFonts.plusJakartaSans(
-                                    fontSize: 11,
-                                    color: kTextSecondary,
-                                    fontWeight: FontWeight.w500,
+                                    fontSize: 11.5,
+                                    color: const Color(0xFFD1FAE5),
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ],
@@ -225,26 +286,49 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                       ),
-                      // Tombol WhatsApp Toko (Rapi di Header, tidak menutupi produk)
-                      IconButton(
-                        tooltip: 'Chat WhatsApp Toko',
-                        onPressed: () => openWhatsapp(
+                      // Tombol WhatsApp Timbul 3D
+                      GestureDetector(
+                        onTap: () => openWhatsapp(
                           message: 'Halo Kios Aisyha, saya mau tanya info stok sembako hari ini.',
                           context: context,
                         ),
-                        style: IconButton.styleFrom(
-                          backgroundColor: const Color(0xFFECFDF5),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            side: const BorderSide(color: Color(0xFFA7F3D0)),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Color(0xFF024430),
+                                offset: Offset(0, 2.5), // Efek timbul 3D
+                                blurRadius: 0,
+                              ),
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 6,
+                                offset: Offset(0, 4),
+                              ),
+                            ],
                           ),
-                          padding: const EdgeInsets.all(8),
-                          minimumSize: const Size(36, 36),
-                        ),
-                        icon: const Icon(
-                          Icons.chat_bubble_outline_rounded,
-                          color: Color(0xFF059669),
-                          size: 18,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.chat_bubble_rounded,
+                                color: Color(0xFF059669),
+                                size: 16,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                'Chat',
+                                style: GoogleFonts.plusJakartaSans(
+                                  color: const Color(0xFF047857),
+                                  fontSize: 11.5,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],
@@ -252,24 +336,29 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
 
-              // 2. Bar Pencarian Bersih & Nyaman
+              // 2. Bar Pencarian Melayang 3D (Floating Squircle)
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 10, 16, 6),
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
                   child: GestureDetector(
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(builder: (_) => const CatalogScreen()),
                     ),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: const Color(0xFFE2E8F0)),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: const Color(0xFFEDF2F7), width: 1.2),
                         boxShadow: const [
                           BoxShadow(
-                            color: Color(0x04000000),
+                            color: Color(0x0A000000),
+                            blurRadius: 16,
+                            offset: Offset(0, 6),
+                          ),
+                          BoxShadow(
+                            color: Color(0x05059669),
                             blurRadius: 6,
                             offset: Offset(0, 2),
                           ),
@@ -277,14 +366,22 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       child: Row(
                         children: [
-                          const Icon(Icons.search_rounded, color: kSlate400, size: 20),
-                          const SizedBox(width: 10),
+                          Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFE6F4EA),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Icon(Icons.search_rounded, color: kPrimary, size: 18),
+                          ),
+                          const SizedBox(width: 12),
                           Expanded(
                             child: Text(
-                              'Cari beras, minyak goreng, gula, telur...',
+                              'Cari beras premium, minyak goreng, telur...',
                               style: GoogleFonts.plusJakartaSans(
-                                color: kSlate400,
+                                color: kTextSecondary,
                                 fontSize: 13,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                           ),
@@ -295,32 +392,63 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
 
-              // 3. Info Ringkas Gratis Ongkir (Satu Baris, Rapi)
+              // 3. Info Kartu Gratis Ongkir Hangat (Warm Merchant Gold Accent)
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFECFDF5),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: const Color(0xFFA7F3D0)),
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFFFFFBEB), Color(0xFFFEF3C7)],
+                      ),
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: const Color(0xFFFDE68A), width: 1.2),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color(0x08F59E0B),
+                          blurRadius: 10,
+                          offset: Offset(0, 4),
+                        ),
+                      ],
                     ),
                     child: Row(
                       children: [
-                        const Icon(
-                          Icons.local_shipping_outlined,
-                          color: kPrimaryDark,
-                          size: 16,
+                        Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF59E0B),
+                            borderRadius: BorderRadius.circular(8),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Color(0xFFB45309),
+                                offset: Offset(0, 1.5),
+                                blurRadius: 0,
+                              ),
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.local_shipping_rounded,
+                            color: Colors.white,
+                            size: 16,
+                          ),
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: 10),
                         Expanded(
-                          child: Text(
-                            'Gratis Ongkir untuk belanja sembako min. Rp150.000',
-                            style: GoogleFonts.plusJakartaSans(
-                              color: kPrimaryDark,
-                              fontSize: 11.5,
-                              fontWeight: FontWeight.w600,
+                          child: RichText(
+                            text: TextSpan(
+                              style: GoogleFonts.plusJakartaSans(
+                                color: const Color(0xFF92400E),
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              children: const [
+                                TextSpan(text: 'Gratis Ongkir '),
+                                TextSpan(
+                                  text: 'untuk belanja sembako min. Rp150.000',
+                                  style: TextStyle(fontWeight: FontWeight.w800),
+                                ),
+                              ],
                             ),
                           ),
                         ),
@@ -418,29 +546,48 @@ class _HomeScreenState extends State<HomeScreen> {
                           },
                           child: AnimatedContainer(
                             duration: const Duration(milliseconds: 200),
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 7),
                             decoration: BoxDecoration(
-                              color: isSelected ? kPrimary : Colors.white,
-                              borderRadius: BorderRadius.circular(18),
+                              gradient: isSelected
+                                  ? const LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [Color(0xFF10B981), Color(0xFF047857)],
+                                    )
+                                  : null,
+                              color: isSelected ? null : Colors.white,
+                              borderRadius: BorderRadius.circular(16),
                               border: Border.all(
-                                color: isSelected ? kPrimary : const Color(0xFFE2E8F0),
+                                color: isSelected ? Colors.transparent : const Color(0xFFEDF2F7),
+                                width: 1.2,
                               ),
                               boxShadow: isSelected
                                   ? [
+                                      const BoxShadow(
+                                        color: Color(0xFF024430),
+                                        offset: Offset(0, 2.5), // 3D bevel depth
+                                        blurRadius: 0,
+                                      ),
                                       BoxShadow(
-                                        color: kPrimary.withValues(alpha: 0.25),
-                                        blurRadius: 6,
-                                        offset: const Offset(0, 2),
+                                        color: kPrimary.withOpacity(0.3),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 3),
                                       ),
                                     ]
-                                  : null,
+                                  : const [
+                                      BoxShadow(
+                                        color: Color(0x06000000),
+                                        blurRadius: 6,
+                                        offset: Offset(0, 2),
+                                      ),
+                                    ],
                             ),
                             child: Center(
                               child: Text(
                                 label,
                                 style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 12,
-                                  fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                                  fontSize: 12.5,
+                                  fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
                                   color: isSelected ? Colors.white : kTextPrimary,
                                 ),
                               ),
@@ -461,26 +608,48 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                          padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFF5722),
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: Text(
-                            'PROMO',
-                            style: GoogleFonts.plusJakartaSans(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w900,
-                              fontSize: 10,
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFFFF416C), Color(0xFFFF4B2B)],
                             ),
+                            borderRadius: BorderRadius.circular(8),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Color(0xFFC2185B),
+                                offset: Offset(0, 2),
+                                blurRadius: 0,
+                              ),
+                              BoxShadow(
+                                color: Color(0x40FF416C),
+                                blurRadius: 6,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.bolt_rounded, color: Colors.white, size: 14),
+                              const SizedBox(width: 2),
+                              Text(
+                                'FLASH SALE',
+                                style: GoogleFonts.plusJakartaSans(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 10.5,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                         const SizedBox(width: 8),
                         Text(
                           'Harga Spesial Hari Ini',
                           style: GoogleFonts.plusJakartaSans(
-                            fontSize: 13,
-                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w800,
                             color: kTextPrimary,
                           ),
                         ),

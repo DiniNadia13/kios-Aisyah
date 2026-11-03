@@ -8,19 +8,47 @@ import '../config.dart';
 import '../state.dart';
 import 'product_detail.dart';
 
-// Palette Warna Modern Kios Aisyha
+// Palette Warna Modern Kios Aisyha (Perpaduan Modern Emerald 3D & Warm Merchant)
 const kPrimary = Color(0xFF059669);      // Emerald Green segar
-const kPrimaryDark = Color(0xFF047857);  // Deep Emerald
-const kPrimaryLight = Color(0xFFE8F5E9); // Mint pastel halus
-const kSecondary = Color(0xFFFF6B35);    // Tangerine untuk promo & flash sale
-const kAccentAmber = Color(0xFFF59E0B);  // Gold untuk gratis ongkir & rating
-const kBg = Color(0xFFF8FAFC);           // Slate 50 background bersih
-const kSurface = Colors.white;           // Kartu putih
+const kPrimaryDark = Color(0xFF047857);  // Deep Forest Emerald
+const kPrimaryLight = Color(0xFFE6F4EA); // Mint pastel hangat
+const kSecondary = Color(0xFFFF5722);    // Sunset Coral untuk promo & flash sale
+const kAccentAmber = Color(0xFFF59E0B);  // Emas Padi untuk gratis ongkir & rating
+const kAccentWarm = Color(0xFFD97706);   // Warm caramel accent
+const kBg = Color(0xFFF4F6F4);           // Background hangat (kontras tinggi dengan kartu 3D)
+const kSurface = Colors.white;           // Kartu putih bersih
 const kTextPrimary = Color(0xFF0F172A);  // Slate 900
 const kTextSecondary = Color(0xFF64748B);// Slate 500
 const kSlate300 = Color(0xFFCBD5E1);
 const kSlate400 = Color(0xFF94A3B8);
 const kBorder = Color(0xFFE2E8F0);       // Slate 200
+
+// Helper Bayangan Timbul 3D (Dual-Layer Soft Glow & Tactile Shadow)
+List<BoxShadow> tactileCardShadow({Color? glowColor}) => [
+  const BoxShadow(
+    color: Color(0x0A000000),
+    blurRadius: 18,
+    offset: Offset(0, 8),
+  ),
+  BoxShadow(
+    color: (glowColor ?? kPrimary).withOpacity(0.06),
+    blurRadius: 8,
+    offset: const Offset(0, 2),
+  ),
+];
+
+List<BoxShadow> tactileBtnShadow({Color baseColor = const Color(0xFF047857)}) => [
+  BoxShadow(
+    color: baseColor,
+    offset: const Offset(0, 3), // 3D bevel depth
+    blurRadius: 0,
+  ),
+  BoxShadow(
+    color: baseColor.withOpacity(0.32),
+    offset: const Offset(0, 5),
+    blurRadius: 10,
+  ),
+];
 
 String rp(num v) {
   final s = v.round().toString();
@@ -157,20 +185,14 @@ class ProductCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: kSurface,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFF1F5F9), width: 1.2),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x06000000),
-            blurRadius: 10,
-            offset: Offset(0, 4),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: const Color(0xFFEDF2F7), width: 1.2),
+        boxShadow: tactileCardShadow(glowColor: hasPromo ? kSecondary : kPrimary),
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(22),
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(builder: (_) => ProductDetailScreen(product: p)),
@@ -178,20 +200,20 @@ class ProductCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Gambar Produk & Badge Diskon
+              // Gambar Produk & Badge Diskon Timbul
               Expanded(
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
                     Container(
-                      margin: const EdgeInsets.all(6),
+                      margin: const EdgeInsets.all(7),
                       decoration: BoxDecoration(
                         color: const Color(0xFFF8FAFC),
-                        borderRadius: BorderRadius.circular(14),
+                        borderRadius: BorderRadius.circular(16),
                       ),
                       child: NetImage(
                         p['image_url'] as String?,
-                        borderRadius: 14,
+                        borderRadius: 16,
                       ),
                     ),
                     if (hasPromo)
@@ -199,44 +221,65 @@ class ProductCard extends StatelessWidget {
                         top: 10,
                         left: 10,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
                             gradient: const LinearGradient(
-                              colors: [Color(0xFFFF5722), Color(0xFFFF8A65)],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [Color(0xFFFF416C), Color(0xFFFF4B2B)],
                             ),
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(10),
+                              bottomRight: Radius.circular(10),
+                              topRight: Radius.circular(4),
+                              bottomLeft: Radius.circular(4),
+                            ),
                             boxShadow: [
                               BoxShadow(
-                                color: const Color(0xFFFF5722).withOpacity(0.3),
-                                blurRadius: 4,
-                                offset: const Offset(0, 2),
+                                color: const Color(0xFFFF416C).withOpacity(0.4),
+                                blurRadius: 6,
+                                offset: const Offset(0, 3),
                               ),
                             ],
                           ),
-                          child: Text(
-                            '-${(((p['price'] - p['final_price']) / p['price']) * 100).round()}%',
-                            style: GoogleFonts.plusJakartaSans(
-                              color: Colors.white,
-                              fontSize: 10.5,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.bolt_rounded, size: 12, color: Colors.white),
+                              const SizedBox(width: 1),
+                              Text(
+                                '-${(((p['price'] - p['final_price']) / p['price']) * 100).round()}%',
+                                style: GoogleFonts.plusJakartaSans(
+                                  color: Colors.white,
+                                  fontSize: 10.5,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
                     if (outOfStock)
                       Positioned.fill(
                         child: Container(
-                          margin: const EdgeInsets.all(6),
+                          margin: const EdgeInsets.all(7),
                           decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.4),
-                            borderRadius: BorderRadius.circular(14),
+                            color: Colors.black.withOpacity(0.45),
+                            borderRadius: BorderRadius.circular(16),
                           ),
                           alignment: Alignment.center,
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                             decoration: BoxDecoration(
                               color: Colors.red.shade700,
-                              borderRadius: BorderRadius.circular(6),
+                              borderRadius: BorderRadius.circular(8),
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Colors.black26,
+                                  blurRadius: 6,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
                             ),
                             child: Text(
                               'Habis',
@@ -255,23 +298,24 @@ class ProductCard extends StatelessWidget {
 
               // Detail Produk
               Padding(
-                padding: const EdgeInsets.fromLTRB(10, 4, 10, 10),
+                padding: const EdgeInsets.fromLTRB(11, 4, 11, 11),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Tag Satuan
+                    // Tag Satuan Hangat (Pill)
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF1F5F9),
+                        color: const Color(0xFFF1F8F5),
                         borderRadius: BorderRadius.circular(6),
+                        border: Border.all(color: const Color(0xFFD1FAE5), width: 0.8),
                       ),
                       child: Text(
                         'per ${p['unit']}',
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 10,
                           fontWeight: FontWeight.w600,
-                          color: kTextSecondary,
+                          color: kPrimaryDark,
                         ),
                       ),
                     ),
@@ -302,7 +346,7 @@ class ProductCard extends StatelessWidget {
                         ),
                       ),
 
-                    // Baris Harga & Tombol Tambah
+                    // Baris Harga & Tombol Tambah Timbul 3D
                     Row(
                       children: [
                         Expanded(
@@ -315,36 +359,56 @@ class ProductCard extends StatelessWidget {
                             ),
                           ),
                         ),
-                        // Tombol Tambah ke Keranjang
+                        // Tombol Tambah ke Keranjang Timbul 3D (Tactile Button)
                         if (!outOfStock)
-                          Material(
-                            color: inCartQty > 0 ? kPrimaryDark : kPrimary,
-                            borderRadius: BorderRadius.circular(10),
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(10),
-                              onTap: () {
-                                final ok = cart.add(p);
-                                if (ok) {
-                                  snack(context, '${p['name']} ditambah ke keranjang', isSuccess: true);
-                                } else {
-                                  snack(context, 'Stok maksimal tercapai');
-                                }
-                              },
-                              child: Container(
-                                width: 32,
-                                height: 32,
-                                alignment: Alignment.center,
-                                child: inCartQty > 0
-                                    ? Text(
-                                        '$inCartQty',
-                                        style: GoogleFonts.plusJakartaSans(
-                                          color: Colors.white,
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      )
-                                    : const Icon(Icons.add_rounded, size: 20, color: Colors.white),
+                          GestureDetector(
+                            onTap: () {
+                              final ok = cart.add(p);
+                              if (ok) {
+                                snack(context, '${p['name']} ditambah ke keranjang', isSuccess: true);
+                              } else {
+                                snack(context, 'Stok maksimal tercapai');
+                              }
+                            },
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 150),
+                              width: 34,
+                              height: 34,
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: inCartQty > 0
+                                      ? [const Color(0xFF047857), const Color(0xFF065F46)]
+                                      : [const Color(0xFF10B981), const Color(0xFF059669)],
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: inCartQty > 0
+                                        ? const Color(0xFF024430)
+                                        : const Color(0xFF047857),
+                                    offset: const Offset(0, 2.5), // Efek timbul alas 3D
+                                    blurRadius: 0,
+                                  ),
+                                  BoxShadow(
+                                    color: kPrimary.withOpacity(0.28),
+                                    offset: const Offset(0, 4),
+                                    blurRadius: 8,
+                                  ),
+                                ],
                               ),
+                              alignment: Alignment.center,
+                              child: inCartQty > 0
+                                  ? Text(
+                                      '$inCartQty',
+                                      style: GoogleFonts.plusJakartaSans(
+                                        color: Colors.white,
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w900,
+                                      ),
+                                    )
+                                  : const Icon(Icons.add_rounded, size: 20, color: Colors.white),
                             ),
                           ),
                       ],

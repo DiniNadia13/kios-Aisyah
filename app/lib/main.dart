@@ -51,17 +51,26 @@ class KiosAisyhaApp extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
+          cardTheme: CardThemeData(
+            elevation: 3,
+            shadowColor: const Color(0x14059669),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            color: Colors.white,
+          ),
           filledButtonTheme: FilledButtonThemeData(
             style: FilledButton.styleFrom(
               backgroundColor: kPrimary,
               foregroundColor: Colors.white,
-              elevation: 0,
+              elevation: 3,
+              shadowColor: const Color(0x4D047857),
               textStyle: GoogleFonts.plusJakartaSans(
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w800,
                 fontSize: 14.5,
               ),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(16),
               ),
             ),
           ),
@@ -69,16 +78,16 @@ class KiosAisyhaApp extends StatelessWidget {
             filled: true,
             fillColor: Colors.white,
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(color: kBorder),
+              borderRadius: BorderRadius.circular(16),
+              borderSide: const BorderSide(color: Color(0xFFEDF2F7)),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(color: kBorder),
+              borderRadius: BorderRadius.circular(16),
+              borderSide: const BorderSide(color: Color(0xFFEDF2F7)),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(color: kPrimary, width: 1.8),
+              borderRadius: BorderRadius.circular(16),
+              borderSide: const BorderSide(color: kPrimary, width: 2.0),
             ),
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             hintStyle: GoogleFonts.plusJakartaSans(
@@ -88,14 +97,17 @@ class KiosAisyhaApp extends StatelessWidget {
           ),
           navigationBarTheme: NavigationBarThemeData(
             backgroundColor: Colors.white,
-            elevation: 8,
-            shadowColor: Colors.black12,
-            indicatorColor: kPrimaryLight,
+            elevation: 12,
+            shadowColor: const Color(0x1F000000),
+            indicatorColor: const Color(0xFFE6F4EA),
+            indicatorShape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
             labelTextStyle: WidgetStateProperty.resolveWith((states) {
               final isSelected = states.contains(WidgetState.selected);
               return GoogleFonts.plusJakartaSans(
                 fontSize: 11,
-                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                fontWeight: isSelected ? FontWeight.w800 : FontWeight.w500,
                 color: isSelected ? kPrimaryDark : kTextSecondary,
               );
             }),

@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 /// Alamat server API Laravel.
 ///
 /// - Web (Chrome)     : http://127.0.0.1:8000/api
