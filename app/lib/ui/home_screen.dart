@@ -132,6 +132,39 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Json> _list(String key) =>
       ((data?[key] as List?) ?? []).map((e) => Json.from(e as Map)).toList();
 
+  bool _isStoreOpen(String hoursStr) {
+    try {
+      final parts = hoursStr.split('-');
+      if (parts.length != 2) return true;
+
+      final startPart = parts[0].trim();
+      final endPart = parts[1].replaceAll(RegExp(r'[^0-9:]'), '').trim();
+
+      final startH = int.parse(startPart.split(':')[0].replaceAll(RegExp(r'[^0-9]'), ''));
+      final startM = startPart.contains(':')
+          ? int.parse(startPart.split(':')[1].replaceAll(RegExp(r'[^0-9]'), ''))
+          : 0;
+
+      final endH = int.parse(endPart.split(':')[0].replaceAll(RegExp(r'[^0-9]'), ''));
+      final endM = endPart.contains(':')
+          ? int.parse(endPart.split(':')[1].replaceAll(RegExp(r'[^0-9]'), ''))
+          : 0;
+
+      final now = DateTime.now();
+      final currentMinutes = now.hour * 60 + now.minute;
+      final startMinutes = startH * 60 + startM;
+      final endMinutes = endH * 60 + endM;
+
+      if (startMinutes <= endMinutes) {
+        return currentMinutes >= startMinutes && currentMinutes <= endMinutes;
+      } else {
+        return currentMinutes >= startMinutes || currentMinutes <= endMinutes;
+      }
+    } catch (_) {
+      return true;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (error != null && data == null) {
@@ -155,6 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final storeHours = (data?['payment_info']?['store_hours'] as String?) ??
         (data?['store_hours'] as String?) ??
         '07:00 - 21:00 WIB';
+    final isOpen = _isStoreOpen(storeHours);
 
     // Filter produk berdasarkan kategori jika dipilih
     final displayedProducts = selectedCategoryId == null
@@ -236,12 +270,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Container(
                                   width: 7,
                                   height: 7,
-                                  decoration: const BoxDecoration(
-                                    color: Color(0xFF6EE7B7),
+                                  decoration: BoxDecoration(
+                                    color: isOpen ? const Color(0xFF6EE7B7) : const Color(0xFFFBBF24),
                                     shape: BoxShape.circle,
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Color(0xFF6EE7B7),
+                                        color: isOpen ? const Color(0xFF6EE7B7) : const Color(0xFFFBBF24),
                                         blurRadius: 4,
                                         spreadRadius: 1,
                                       ),
@@ -251,12 +285,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                 const SizedBox(width: 6),
                                 Expanded(
                                   child: Text(
-                                    'Buka: $storeHours',
+                                    isOpen ? 'Buka: $storeHours' : 'Tutup • Buka $storeHours',
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: GoogleFonts.plusJakartaSans(
                                       fontSize: 11.5,
-                                      color: const Color(0xFFD1FAE5),
+                                      color: isOpen ? const Color(0xFFD1FAE5) : const Color(0xFFFEF3C7),
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
@@ -316,6 +350,61 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
+
+              // Banner Notifikasi Toko Sedang Tutup Otomatis
+              if (!isOpen)
+                SliverToBoxAdapter(
+                  child: Container(
+                    margin: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFFBEB),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: const Color(0xFFFDE68A), width: 1.2),
+                      boxShadow: const [
+                        BoxShadow(color: Color(0x0A000000), blurRadius: 8, offset: Offset(0, 2)),
+                      ],
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(7),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFEF3C7),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: const Icon(Icons.nightlight_round, color: Color(0xFFD97706), size: 20),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Toko Sedang Tutup',
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 13,
+                                  color: const Color(0xFF92400E),
+                                ),
+                              ),
+                              const SizedBox(height: 3),
+                              Text(
+                                'Pesanan Anda tetap diterima dan akan diproses segera saat toko buka ($storeHours).',
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 11.5,
+                                  color: const Color(0xFFB45309),
+                                  height: 1.35,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
 
               // 2. Bar Pencarian Melayang 3D (Floating Squircle)
               SliverToBoxAdapter(

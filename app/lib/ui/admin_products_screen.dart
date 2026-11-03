@@ -124,6 +124,14 @@ class _AdminProductsScreenState extends State<AdminProductsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final displayedProducts = filterLowStockOnly
+        ? products
+            .where((p) =>
+                ((p['stock'] as num?)?.toInt() ?? 0) <=
+                (((p['min_stock'] as num?)?.toInt()) ?? 5))
+            .toList()
+        : products;
+
     return Scaffold(
       backgroundColor: kBg,
       appBar: AppBar(
@@ -215,6 +223,8 @@ class _AdminProductsScreenState extends State<AdminProductsScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 children: [
                   _filterChip('Semua Kategori', null),
+                  if (lowStockCount > 0)
+                    _lowStockChip(),
                   for (final c in categories)
                     _filterChip(c['name'] as String, c['id'] as int),
                 ],
@@ -230,7 +240,7 @@ class _AdminProductsScreenState extends State<AdminProductsScreen> {
               )
             else if (error != null && products.isEmpty)
               ErrorRetry(error!, _load)
-            else if (products.isEmpty)
+            else if (products.isEmpty || (filterLowStockOnly && displayedProducts.isEmpty))
               Padding(
                 padding: const EdgeInsets.all(50),
                 child: Center(
@@ -239,7 +249,9 @@ class _AdminProductsScreenState extends State<AdminProductsScreen> {
                       const Icon(Icons.inventory_2_outlined, size: 48, color: kSlate300),
                       const SizedBox(height: 12),
                       Text(
-                        'Belum ada sembako di kategori ini',
+                        filterLowStockOnly
+                            ? 'Aman! Tidak ada sembako dengan stok menipis.'
+                            : 'Belum ada sembako di kategori ini',
                         style: GoogleFonts.plusJakartaSans(
                           color: kTextSecondary,
                           fontSize: 13,
@@ -266,11 +278,45 @@ class _AdminProductsScreenState extends State<AdminProductsScreen> {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 padding: const EdgeInsets.fromLTRB(16, 4, 16, 90),
-                itemCount: products.length,
+                itemCount: displayedProducts.length,
                 separatorBuilder: (_, __) => const SizedBox(height: 10),
-                itemBuilder: (_, i) => _buildProductAdminCard(products[i]),
+                itemBuilder: (_, i) => _buildProductAdminCard(displayedProducts[i]),
               ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _lowStockChip() {
+    return Padding(
+      padding: const EdgeInsets.only(right: 8),
+      child: GestureDetector(
+        onTap: () {
+          setState(() {
+            filterLowStockOnly = !filterLowStockOnly;
+            if (filterLowStockOnly) selectedCategory = null;
+          });
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: filterLowStockOnly ? Colors.red.shade700 : const Color(0xFFFEF2F2),
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(
+              color: filterLowStockOnly ? Colors.red.shade700 : const Color(0xFFFCA5A5),
+              width: 1.2,
+            ),
+          ),
+          child: Text(
+            '⚠️ Stok Menipis ($lowStockCount)',
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 11.5,
+              fontWeight: FontWeight.bold,
+              color: filterLowStockOnly ? Colors.white : Colors.red.shade700,
+            ),
+          ),
         ),
       ),
     );
@@ -313,6 +359,8 @@ class _AdminProductsScreenState extends State<AdminProductsScreen> {
     final promoPrice = (p['promo_price'] as num?)?.toInt();
     final unit = (p['unit'] as String?) ?? 'pcs';
     final hasPromo = promoPrice != null && promoPrice < price;
+    final minStock = ((p['min_stock'] as num?)?.toInt()) ?? 5;
+    final isLowStock = stock <= minStock;
 
     return Container(
       padding: const EdgeInsets.all(12),
@@ -421,17 +469,22 @@ class _AdminProductsScreenState extends State<AdminProductsScreen> {
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3.5),
                       decoration: BoxDecoration(
-                        color: stock <= 5 ? const Color(0xFFFEF2F2) : const Color(0xFFF0FDF4),
+                        color: isLowStock ? const Color(0xFFFEF2F2) : const Color(0xFFF0FDF4),
                         borderRadius: BorderRadius.circular(6),
+                        border: Border.all(
+                          color: isLowStock ? const Color(0xFFFCA5A5) : const Color(0xFFBBF7D0),
+                        ),
                       ),
                       child: Text(
-                        'Stok: $stock $unit',
+                        isLowStock
+                            ? '⚠️ Sisa $stock $unit • Segera Kulakan!'
+                            : 'Stok: $stock $unit',
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 10.5,
                           fontWeight: FontWeight.bold,
-                          color: stock <= 5 ? Colors.red.shade700 : const Color(0xFF16A34A),
+                          color: isLowStock ? Colors.red.shade700 : const Color(0xFF16A34A),
                         ),
                       ),
                     ),
