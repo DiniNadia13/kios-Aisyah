@@ -152,6 +152,9 @@ class _HomeScreenState extends State<HomeScreen> {
     final flash = _list('flash_sale');
     final categories = _list('categories');
     final allProducts = _list('best_sellers');
+    final storeHours = (data?['payment_info']?['store_hours'] as String?) ??
+        (data?['store_hours'] as String?) ??
+        '07:00 - 21:00 WIB';
 
     // Filter produk berdasarkan kategori jika dipilih
     final displayedProducts = selectedCategoryId == null
@@ -193,7 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   child: Row(
                     children: [
-                      // Logo Toko Timbul dengan Aksen Emas Padi
+                      // Logo Toko Timbul dengan Aksen Bersih
                       Container(
                         padding: const EdgeInsets.all(9),
                         decoration: BoxDecoration(
@@ -218,41 +221,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              children: [
-                                Text(
-                                  'Kios Aisyha',
-                                  style: GoogleFonts.plusJakartaSans(
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.w900,
-                                    color: Colors.white,
-                                    letterSpacing: -0.2,
-                                  ),
-                                ),
-                                const SizedBox(width: 6),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFFF59E0B),
-                                    borderRadius: BorderRadius.circular(6),
-                                    boxShadow: const [
-                                      BoxShadow(
-                                        color: Colors.black12,
-                                        blurRadius: 4,
-                                        offset: Offset(0, 1),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Text(
-                                    'RESMI',
-                                    style: GoogleFonts.plusJakartaSans(
-                                      color: Colors.white,
-                                      fontSize: 9,
-                                      fontWeight: FontWeight.w900,
-                                    ),
-                                  ),
-                                ),
-                              ],
+                            Text(
+                              'Kios Aisyha',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w900,
+                                color: Colors.white,
+                                letterSpacing: -0.2,
+                              ),
                             ),
                             const SizedBox(height: 3),
                             Row(
@@ -273,12 +249,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                 ),
                                 const SizedBox(width: 6),
-                                Text(
-                                  'Buka 07:00 - 21:00 • Sembako Murah & Segar',
-                                  style: GoogleFonts.plusJakartaSans(
-                                    fontSize: 11.5,
-                                    color: const Color(0xFFD1FAE5),
-                                    fontWeight: FontWeight.w600,
+                                Expanded(
+                                  child: Text(
+                                    'Buka: $storeHours',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.plusJakartaSans(
+                                      fontSize: 11.5,
+                                      color: const Color(0xFFD1FAE5),
+                                      fontWeight: FontWeight.w600,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -286,6 +266,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                       ),
+                      const SizedBox(width: 8),
                       // Tombol WhatsApp Timbul 3D
                       GestureDetector(
                         onTap: () => openWhatsapp(

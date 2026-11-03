@@ -253,7 +253,7 @@ class _AdminSettingsScreenState extends State<AdminSettingsScreen> {
                   const SizedBox(height: 12),
                   _field('Nomor Telepon Toko', storePhone, '0821-5430-6904'),
                   const SizedBox(height: 12),
-                  _field('Jam Operasional', storeHours, '07:00 - 21:00 WIB'),
+                  _field('Jam Buka & Tutup Toko', storeHours, 'Contoh: 07:00 - 21:00 WIB'),
                   const SizedBox(height: 12),
                   _field('Alamat Lengkap Kios', storeAddress, 'Jl. Pemuda Sembako No. 8, Kios Aisyha', maxLines: 2),
                 ],

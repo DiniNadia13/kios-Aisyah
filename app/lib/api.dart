@@ -46,13 +46,13 @@ class Api {
     try {
       final r = await call().timeout(const Duration(seconds: 20));
       return _handle(r);
-    } on SocketException {
-      throw ApiException('Tidak dapat terhubung ke server. Periksa internet Anda.');
-    } on http.ClientException {
-      throw ApiException('Tidak dapat terhubung ke server. Periksa internet Anda.');
+    } on SocketException catch (e) {
+      throw ApiException('Tidak dapat terhubung ke server ($apiBase): ${e.message}');
+    } on http.ClientException catch (e) {
+      throw ApiException('Tidak dapat terhubung ke server ($apiBase): ${e.message}');
     } on Exception catch (e) {
       if (e is ApiException) rethrow;
-      throw ApiException('Koneksi bermasalah, coba lagi.');
+      throw ApiException('Koneksi bermasalah ($apiBase): $e');
     }
   }
 
