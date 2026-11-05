@@ -285,15 +285,51 @@ class ProfileScreen extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(18),
-              border: Border.all(color: const Color(0xFFF1F5F9)),
+              border: Border.all(color: const Color(0xFFFEE2E2)),
+              boxShadow: const [
+                BoxShadow(color: Color(0x06000000), blurRadius: 10, offset: Offset(0, 3)),
+              ],
             ),
-            child: _menuTile(
-              icon: Icons.logout_rounded,
-              iconColor: Colors.red.shade600,
-              title: 'Keluar dari Akun',
-              subtitle: 'Hapus sesi login di perangkat ini',
-              titleColor: Colors.red.shade600,
-              onTap: () => auth.logout(),
+            child: Material(
+              color: Colors.transparent,
+              borderRadius: BorderRadius.circular(18),
+              child: _menuTile(
+                icon: Icons.logout_rounded,
+                iconColor: Colors.red.shade600,
+                title: 'Keluar dari Akun',
+                subtitle: 'Hapus sesi login di perangkat ini',
+                titleColor: Colors.red.shade600,
+                onTap: () async {
+                  final confirm = await showDialog<bool>(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                      title: Text(
+                        'Keluar Akun?',
+                        style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold),
+                      ),
+                      content: Text(
+                        'Apakah Anda yakin ingin keluar dari akun Kios Aisyha di perangkat ini?',
+                        style: GoogleFonts.plusJakartaSans(fontSize: 13),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(ctx, false),
+                          child: const Text('Batal'),
+                        ),
+                        FilledButton(
+                          style: FilledButton.styleFrom(backgroundColor: Colors.red.shade600),
+                          onPressed: () => Navigator.pop(ctx, true),
+                          child: const Text('Ya, Keluar'),
+                        ),
+                      ],
+                    ),
+                  );
+                  if (confirm == true) {
+                    await auth.logout();
+                  }
+                },
+              ),
             ),
           ),
         ],

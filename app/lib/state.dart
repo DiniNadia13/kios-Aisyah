@@ -63,15 +63,20 @@ class AuthState extends ChangeNotifier {
       _auth('/register', {'name': name, 'phone': phone, 'password': password});
 
   Future<void> logout() async {
-    try {
-      await Api.post('/logout');
-    } catch (_) {}
+    final oldToken = Api.token;
     Api.token = null;
     user = null;
-    final p = await SharedPreferences.getInstance();
-    await p.remove('token');
-    await p.remove('user_data');
     notifyListeners();
+
+    try {
+      final p = await SharedPreferences.getInstance();
+      await p.remove('token');
+      await p.remove('user_data');
+    } catch (_) {}
+
+    if (oldToken != null) {
+      Api.post('/logout').catchError((_) => {});
+    }
   }
 }
 
