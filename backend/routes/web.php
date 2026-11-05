@@ -13,11 +13,19 @@ Route::get('/receipt/{order:code}', function (Order $order) {
 })->name('receipt.show');
 
 Route::get('/download', function () {
-    $path = base_path('../KiosAisyha.apk');
-    if (! file_exists($path)) {
-        abort(404, 'File APK belum tersedia.');
+    $candidates = [
+        public_path('KiosAisyha.apk'),
+        __DIR__ . '/../../public_html/KiosAisyha.apk',
+        base_path('../public_html/KiosAisyha.apk'),
+        base_path('../KiosAisyha.apk'),
+        base_path('KiosAisyha.apk'),
+    ];
+    foreach ($candidates as $p) {
+        if (file_exists($p)) {
+            return response()->download($p, 'KiosAisyha.apk', [
+                'Content-Type' => 'application/vnd.android.package-archive',
+            ]);
+        }
     }
-    return response()->download($path, 'KiosAisyha.apk', [
-        'Content-Type' => 'application/vnd.android.package-archive',
-    ]);
+    return redirect('/KiosAisyha.apk');
 });
