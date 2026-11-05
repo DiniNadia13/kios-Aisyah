@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../api.dart';
 import '../config.dart';
+import '../sound_helper.dart';
 import '../state.dart';
 import 'admin_orders_screen.dart';
 import 'admin_products_screen.dart';
@@ -210,6 +211,31 @@ class ProfileScreen extends StatelessWidget {
                       context,
                       MaterialPageRoute(builder: (_) => const AdminSettingsScreen()),
                     ),
+                  ),
+                  const Divider(height: 1, indent: 56, color: kBorder),
+                  _menuTile(
+                    icon: Icons.notifications_active_rounded,
+                    iconColor: const Color(0xFFE11D48),
+                    title: 'Tes Suara & Notifikasi Pesanan',
+                    subtitle: 'Uji bel kasir & aktifkan izin notifikasi browser',
+                    onTap: () {
+                      playOrderChime(
+                        orderCode: 'TEST-01',
+                        customerName: 'Uji Coba Admin',
+                        total: 'Rp50.000',
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          backgroundColor: const Color(0xFF047857),
+                          behavior: SnackBarBehavior.floating,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          content: const Text(
+                            '🔔 Bel kasir berbunyi! Jika browser meminta izin notifikasi, klik "Izinkan / Allow".',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),

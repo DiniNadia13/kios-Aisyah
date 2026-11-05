@@ -53,8 +53,16 @@
       }
       return audioCtx;
     }
-    window.addEventListener('click', function() { getAudioContext(); }, { once: true });
-    window.addEventListener('touchstart', function() { getAudioContext(); }, { once: true });
+    function initWebNotification() {
+      getAudioContext();
+      if ("Notification" in window && Notification.permission === "default") {
+        try {
+          Notification.requestPermission();
+        } catch(e) {}
+      }
+    }
+    window.addEventListener('click', initWebNotification, { once: true });
+    window.addEventListener('touchstart', initWebNotification, { once: true });
 
     window.playOrderNotificationSound = function() {
       try {
