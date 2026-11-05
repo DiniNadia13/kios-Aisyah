@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../api.dart';
+import '../sound_helper.dart';
 import '../state.dart';
 import 'admin_products_screen.dart';
 import 'common.dart';
@@ -163,6 +164,28 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
               'Produk Toko',
               style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold, fontSize: 11.5),
             ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.notifications_active_rounded, color: Color(0xFFD97706)),
+            tooltip: 'Tes Suara Bel Notifikasi',
+            onPressed: () {
+              playOrderChime(
+                orderCode: 'TEST-ORD',
+                customerName: 'Admin Kios Aisyha',
+                total: 'Rp50.000',
+              );
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  backgroundColor: const Color(0xFF047857),
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  content: const Text(
+                    '🔔 Bel notifikasi berbunyi! Jika browser meminta izin, klik "Izinkan / Allow".',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              );
+            },
           ),
           IconButton(
             icon: const Icon(Icons.refresh_rounded, color: kPrimaryDark),
