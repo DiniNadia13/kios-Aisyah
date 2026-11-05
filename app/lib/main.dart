@@ -147,7 +147,7 @@ class _ShellState extends State<Shell> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         final auth = context.read<AuthState>();
-        AdminNotifier.instance.start(context, auth.isAdmin);
+        AdminNotifier.instance.start(context, loggedIn: auth.loggedIn, isAdmin: auth.isAdmin);
       }
     });
   }
@@ -169,7 +169,7 @@ class _ShellState extends State<Shell> {
   Widget build(BuildContext context) {
     final cart = context.watch<CartState>();
     final auth = context.watch<AuthState>();
-    AdminNotifier.instance.start(context, auth.isAdmin);
+    AdminNotifier.instance.start(context, loggedIn: auth.loggedIn, isAdmin: auth.isAdmin);
 
     Widget needLogin(Widget child) => auth.loggedIn
         ? child
@@ -278,9 +278,39 @@ class _ShellState extends State<Shell> {
               ),
               label: 'Keranjang',
             ),
-            const NavigationDestination(
-              icon: Icon(Icons.receipt_long_outlined),
-              selectedIcon: Icon(Icons.receipt_long_rounded),
+            NavigationDestination(
+              icon: ListenableBuilder(
+                listenable: AdminNotifier.instance,
+                builder: (_, __) {
+                  final count = AdminNotifier.instance.userActiveOrderCount;
+                  final showBadge = !auth.isAdmin && auth.loggedIn && count > 0;
+                  return Badge(
+                    isLabelVisible: showBadge,
+                    backgroundColor: const Color(0xFF0284C7),
+                    label: Text(
+                      '$count',
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
+                    ),
+                    child: const Icon(Icons.receipt_long_outlined),
+                  );
+                },
+              ),
+              selectedIcon: ListenableBuilder(
+                listenable: AdminNotifier.instance,
+                builder: (_, __) {
+                  final count = AdminNotifier.instance.userActiveOrderCount;
+                  final showBadge = !auth.isAdmin && auth.loggedIn && count > 0;
+                  return Badge(
+                    isLabelVisible: showBadge,
+                    backgroundColor: const Color(0xFF0284C7),
+                    label: Text(
+                      '$count',
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
+                    ),
+                    child: const Icon(Icons.receipt_long_rounded),
+                  );
+                },
+              ),
               label: 'Pesanan',
             ),
             NavigationDestination(
