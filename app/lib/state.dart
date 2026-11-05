@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -15,12 +16,30 @@ class AuthState extends ChangeNotifier {
   Future<void> load() async {
     final p = await SharedPreferences.getInstance();
     Api.token = p.getString('token');
+    final cached = p.getString('user_data');
+    if (cached != null) {
+      try {
+        user = Json.from(jsonDecode(cached) as Map);
+        loading = false;
+        notifyListeners();
+      } catch (_) {}
+    }
+
     if (Api.token != null) {
       try {
-        user = Json.from(await Api.get('/me'));
-      } on ApiException {
-        Api.token = null;
-        await p.remove('token');
+        final res = await Api.get('/me');
+        user = Json.from(res as Map);
+        await p.setString('user_data', jsonEncode(user));
+      } on ApiException catch (e) {
+        // HANYA hapus sesi jika token ditolak permanen oleh server (401 Unauthorized)
+        if (e.statusCode == 401) {
+          Api.token = null;
+          user = null;
+          await p.remove('token');
+          await p.remove('user_data');
+        }
+      } catch (_) {
+        // Jika koneksi internet lambat / offline, TETAP masuk menggunakan data cache
       }
     }
     loading = false;
@@ -33,6 +52,7 @@ class AuthState extends ChangeNotifier {
     user = Json.from(r['user'] as Map);
     final p = await SharedPreferences.getInstance();
     await p.setString('token', Api.token!);
+    await p.setString('user_data', jsonEncode(user));
     notifyListeners();
   }
 
@@ -50,6 +70,7 @@ class AuthState extends ChangeNotifier {
     user = null;
     final p = await SharedPreferences.getInstance();
     await p.remove('token');
+    await p.remove('user_data');
     notifyListeners();
   }
 }

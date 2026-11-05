@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
+import 'admin_notifier.dart';
 import 'state.dart';
 import 'ui/auth_screen.dart';
 import 'ui/cart_screen.dart';
@@ -140,6 +141,23 @@ class Shell extends StatefulWidget {
 class _ShellState extends State<Shell> {
   int index = 0;
 
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        final auth = context.read<AuthState>();
+        AdminNotifier.instance.start(context, auth.isAdmin);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    AdminNotifier.instance.stop();
+    super.dispose();
+  }
+
   void setIndex(int i) {
     if (i == 3) {
       context.read<OrdersState>().load();
@@ -151,6 +169,7 @@ class _ShellState extends State<Shell> {
   Widget build(BuildContext context) {
     final cart = context.watch<CartState>();
     final auth = context.watch<AuthState>();
+    AdminNotifier.instance.start(context, auth.isAdmin);
 
     Widget needLogin(Widget child) => auth.loggedIn
         ? child
@@ -264,9 +283,37 @@ class _ShellState extends State<Shell> {
               selectedIcon: Icon(Icons.receipt_long_rounded),
               label: 'Pesanan',
             ),
-            const NavigationDestination(
-              icon: Icon(Icons.person_outline_rounded),
-              selectedIcon: Icon(Icons.person_rounded),
+            NavigationDestination(
+              icon: ListenableBuilder(
+                listenable: AdminNotifier.instance,
+                builder: (_, __) {
+                  final showBadge = auth.isAdmin && AdminNotifier.instance.pendingCount > 0;
+                  return Badge(
+                    isLabelVisible: showBadge,
+                    backgroundColor: const Color(0xFFEF4444),
+                    label: Text(
+                      '${AdminNotifier.instance.pendingCount}',
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
+                    ),
+                    child: const Icon(Icons.person_outline_rounded),
+                  );
+                },
+              ),
+              selectedIcon: ListenableBuilder(
+                listenable: AdminNotifier.instance,
+                builder: (_, __) {
+                  final showBadge = auth.isAdmin && AdminNotifier.instance.pendingCount > 0;
+                  return Badge(
+                    isLabelVisible: showBadge,
+                    backgroundColor: const Color(0xFFEF4444),
+                    label: Text(
+                      '${AdminNotifier.instance.pendingCount}',
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
+                    ),
+                    child: const Icon(Icons.person_rounded),
+                  );
+                },
+              ),
               label: 'Akun',
             ),
           ],

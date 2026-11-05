@@ -45,5 +45,9 @@ app/macos/Flutter/ephemeral/
 scratch/
 *.apk
 KiosAisyha.apk
+*.zip
+*.sql
+staging_deploy/
+staging_web/
 
 

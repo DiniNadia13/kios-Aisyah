@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -20,11 +21,39 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
   bool loading = true;
   String? error;
   String filterStatus = 'all';
+  Timer? _autoRefreshTimer;
 
   @override
   void initState() {
     super.initState();
     _load();
+    _autoRefreshTimer = Timer.periodic(const Duration(seconds: 12), (_) {
+      if (mounted && !loading) {
+        _silentRefresh();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _autoRefreshTimer?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _silentRefresh() async {
+    try {
+      final statsRes = await Api.get('/admin/stats');
+      final ordersRes = await Api.get('/admin/orders', {
+        if (filterStatus != 'all') 'status': filterStatus,
+      });
+
+      if (mounted) {
+        setState(() {
+          stats = Json.from(statsRes as Map);
+          orders = (ordersRes['data'] as List).map((e) => Json.from(e as Map)).toList();
+        });
+      }
+    } catch (_) {}
   }
 
   Future<void> _load() async {

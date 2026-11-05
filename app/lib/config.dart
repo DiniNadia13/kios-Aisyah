@@ -14,12 +14,12 @@ String get apiBase {
     if (host == 'localhost' || host == '127.0.0.1' || host.isEmpty) {
       return 'http://127.0.0.1:8000/api';
     }
-    // Jika di GitHub Pages
-    return 'https://locale-architecture-addressed-looksmart.trycloudflare.com/api';
+    // Jika di domain publik / hosting
+    return 'https://kiosaisyha.my.id/api';
   }
 
-  // HP Asli / Emulator Android
-  return 'https://locale-architecture-addressed-looksmart.trycloudflare.com/api';
+  // HP Asli / Emulator Android mengarah langsung ke domain resmi 24 jam
+  return 'https://kiosaisyha.my.id/api';
 }
 
 /// Nomor WhatsApp toko (format internasional tanpa +).

@@ -8,7 +8,8 @@ import 'config.dart';
 
 class ApiException implements Exception {
   final String message;
-  ApiException(this.message);
+  final int? statusCode;
+  ApiException(this.message, {this.statusCode});
   @override
   String toString() => message;
 }
@@ -39,7 +40,7 @@ class Api {
         msg = body['message'].toString();
       }
     }
-    throw ApiException(msg);
+    throw ApiException(msg, statusCode: r.statusCode);
   }
 
   static Future<dynamic> _send(Future<http.Response> Function() call) async {

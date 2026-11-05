@@ -14,7 +14,7 @@
     This is a placeholder for base href that will be replaced by the value of
     the `--base-href` argument provided to `flutter build`.
   -->
-  <base href="/kios-Aisyah/">
+  <base href="/">
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
@@ -41,6 +41,89 @@
     For more details:
     * https://docs.flutter.dev/platform-integration/web/initialization
   -->
+  <!-- Notifikasi Suara & Push Order Kios Aisyha -->
+  <script>
+    var audioCtx = null;
+    function getAudioContext() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+    window.addEventListener('click', function() { getAudioContext(); }, { once: true });
+    window.addEventListener('touchstart', function() { getAudioContext(); }, { once: true });
+
+    window.playOrderNotificationSound = function() {
+      try {
+        var ctx = getAudioContext();
+        var now = ctx.currentTime;
+
+        // Nada 1: C5 (523 Hz)
+        var osc1 = ctx.createOscillator();
+        var gain1 = ctx.createGain();
+        osc1.type = 'triangle';
+        osc1.frequency.setValueAtTime(523.25, now);
+        gain1.gain.setValueAtTime(0.35, now);
+        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+        osc1.connect(gain1);
+        gain1.connect(ctx.destination);
+        osc1.start(now);
+        osc1.stop(now + 0.35);
+
+        // Nada 2: G5 (784 Hz)
+        var osc2 = ctx.createOscillator();
+        var gain2 = ctx.createGain();
+        osc2.type = 'triangle';
+        osc2.frequency.setValueAtTime(783.99, now + 0.15);
+        gain2.gain.setValueAtTime(0.45, now + 0.15);
+        gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+        osc2.connect(gain2);
+        gain2.connect(ctx.destination);
+        osc2.start(now + 0.15);
+        osc2.stop(now + 0.8);
+
+        // Nada 3: C6 (1046 Hz)
+        var osc3 = ctx.createOscillator();
+        var gain3 = ctx.createGain();
+        osc3.type = 'sine';
+        osc3.frequency.setValueAtTime(1046.50, now + 0.3);
+        gain3.gain.setValueAtTime(0.25, now + 0.3);
+        gain3.gain.exponentialRampToValueAtTime(0.001, now + 1.1);
+        osc3.connect(gain3);
+        gain3.connect(ctx.destination);
+        osc3.start(now + 0.3);
+        osc3.stop(now + 1.1);
+      } catch(e) {
+        console.log('Audio chime error:', e);
+      }
+    };
+
+    window.notifyNewOrder = function(orderCode, customerName, total) {
+      window.playOrderNotificationSound();
+
+      // Judul Tab Browser berkedip
+      var originalTitle = document.title;
+      document.title = "🔔 (1) Pesanan Baru! - Kios Aisyha";
+      setTimeout(function() { document.title = originalTitle; }, 8000);
+
+      // Web Notification jika didukung
+      if ("Notification" in window) {
+        if (Notification.permission === "granted") {
+          try {
+            new Notification("🔔 Pesanan Baru Kios Aisyha!", {
+              body: "Order " + orderCode + " dari " + customerName + " (" + total + ")",
+              icon: "icons/Icon-192.png"
+            });
+          } catch(e) {}
+        } else if (Notification.permission !== "denied") {
+          Notification.requestPermission();
+        }
+      }
+    };
+  </script>
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>
